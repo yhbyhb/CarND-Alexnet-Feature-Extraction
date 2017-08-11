@@ -39,9 +39,9 @@ logits = tf.nn.xw_plus_b(fc7, fc8W, fc8b)
 # be able to reuse some the code.
 loss_op = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits=logits, labels=labels))
 opt_op = tf.train.AdamOptimizer()
-training_operation = opt_op.minimize(loss_op)
+training_operation = opt_op.minimize(loss_op, var_list=[fc8W, fc8b])
 
-correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(labels, 1))
+correct_prediction = tf.equal(tf.argmax(logits, 1), labels)
 accuracy_operation = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 # TODO: Train and evaluate the feature extraction model.
@@ -79,5 +79,3 @@ with tf.Session() as sess:
         print("Validation Accuracy = {:.3f}".format(val_loss))
         print("Validation Accuracy = {:.3f}".format(val_acc))
         print()
-
-    saver.save(sess, save_model_path)
